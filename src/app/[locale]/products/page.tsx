@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BookOpen, Search, X, MessageCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { get_products } from "@/lib/api";
 import ProductCard from "@/components/blocks/product-card";
+import { handleWhatsAppContact } from "@/lib/utils";
 
 // Animation variants
 const containerVariants = {
@@ -36,13 +37,6 @@ const itemVariants = {
 
 // Sort options
 type SortOption = "newest" | "oldest" | "priceLowToHigh" | "priceHighToLow" | "nameAtoZ" | "nameZtoA";
-
-// WhatsApp contact function
-const handleWhatsAppContact = (message: string) => {
-  const phoneNumber = "1234567890"; // Replace with your actual WhatsApp number
-  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-  window.open(whatsappUrl, "_blank");
-};
 
 export default function ProductsPage() {
   const t = useTranslations("products");
