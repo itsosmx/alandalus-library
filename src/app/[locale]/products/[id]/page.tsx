@@ -14,7 +14,6 @@ import QRCodeShare from "@/components/QRCodeShare";
 import { cn, handleWhatsAppContact } from "@/lib/utils";
 import { generateStructuredData } from "@/lib/metadata";
 import JsonLd from "@/components/JsonLd";
-import Head from "next/head";
 
 // Product type definition
 interface Product {
@@ -160,7 +159,6 @@ export default function ProductPage() {
 
   const hasDiscount = product.sale && product.sale < product.price;
   const effectivePrice = hasDiscount ? (product.price * (100 - product.sale!)) / 100 : product.price;
-  const discountPercentage = hasDiscount ? product.sale! : 0;
 
   // Generate structured data for the product
   const productStructuredData = generateStructuredData("product", product);

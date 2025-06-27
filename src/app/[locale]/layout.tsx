@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Cairo } from "next/font/google";
 import "./globals.css";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -8,16 +8,11 @@ import { getTranslations } from "next-intl/server";
 import { generatePageMetadata, generateStructuredData } from "@/lib/metadata";
 import JsonLd from "@/components/JsonLd";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const cairo = Cairo({
+  subsets: ["arabic", "latin"],
+  display: "swap",
+  variable: "--font-cairo",
 });
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export default async function RootLayout({
   children,
   params,
@@ -38,7 +33,7 @@ export default async function RootLayout({
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <JsonLd data={organizationData} />
       <JsonLd data={websiteData} />
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${cairo.variable} antialiased`}>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>

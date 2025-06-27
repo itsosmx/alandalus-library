@@ -13,19 +13,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
-      url: `${baseUrl}/en`,
-      lastModified: new Date(),
-      changeFrequency: 'daily' as const,
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/ar/products`,
-      lastModified: new Date(),
-      changeFrequency: 'daily' as const,
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/en/products`,
+      url: `${baseUrl}/products`,
       lastModified: new Date(),
       changeFrequency: 'daily' as const,
       priority: 0.8,
@@ -36,21 +24,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let productPages: MetadataRoute.Sitemap = []
 
   try {
-    const products = await get_products()
+    const response = await get_products();
+    const products = response.data?.products || [];
+
 
     productPages = products.flatMap((product: any) => [
       {
-        url: `${baseUrl}/ar/products/${product.id}`,
+        url: `${baseUrl}/products/${product.id}`,
         lastModified: new Date(product.updatedAt || product.createdAt),
         changeFrequency: 'weekly' as const,
         priority: 0.6,
       },
-      {
-        url: `${baseUrl}/en/products/${product.id}`,
-        lastModified: new Date(product.updatedAt || product.createdAt),
-        changeFrequency: 'weekly' as const,
-        priority: 0.6,
-      },
+      // {
+      //   url: `${baseUrl}/en/products/${product.id}`,
+      //   lastModified: new Date(product.updatedAt || product.createdAt),
+      //   changeFrequency: 'weekly' as const,
+      //   priority: 0.6,
+      // },
     ])
   } catch (error) {
     console.error('Error generating sitemap for products:', error)

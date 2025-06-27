@@ -22,8 +22,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale, id } = await params;
 
   try {
-    console.log(params);
-
     const response = await get_products();
     const products = response.data?.products || [];
     const product = products.find((p: Product) => p.id === id);
