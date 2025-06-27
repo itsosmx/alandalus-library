@@ -31,8 +31,10 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
-      <JsonLd data={organizationData} />
-      <JsonLd data={websiteData} />
+      <head>
+        <JsonLd data={organizationData} />
+        <JsonLd data={websiteData} />
+      </head>
       <body className={`${cairo.variable} antialiased`}>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>

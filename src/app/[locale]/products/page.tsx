@@ -11,8 +11,6 @@ import { BookOpen, Search, X, MessageCircle, ChevronLeft, ChevronRight } from "l
 import { get_products } from "@/lib/api";
 import ProductCard from "@/components/blocks/product-card";
 import { handleWhatsAppContact } from "@/lib/utils";
-import { useParams } from "next/navigation";
-import Head from "next/head";
 
 // Animation variants
 const containerVariants = {

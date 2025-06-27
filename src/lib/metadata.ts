@@ -32,7 +32,7 @@ export function generatePageMetadata({
   availability = 'in_stock',
 }: MetadataProps): Metadata {
   const siteName = locale === 'ar' ? 'مكتبة الأندلس' : 'Al-Andalus Library';
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://alandalus-library.netlify.app';
   const fullUrl = url ? `${baseUrl}${url}` : baseUrl;
 
   const defaultKeywords = locale === 'ar'
