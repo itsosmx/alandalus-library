@@ -1,9 +1,9 @@
 import { MetadataRoute } from 'next'
 import { get_products } from '@/lib/api'
- 
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://alandalus-library.com'
-  
+  const baseUrl = `${process.env.NEXT_PUBLIC_BASE_URL}`
+
   // Static pages
   const staticPages = [
     {
@@ -34,10 +34,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Dynamic product pages
   let productPages: MetadataRoute.Sitemap = []
-  
+
   try {
     const products = await get_products()
-    
+
     productPages = products.flatMap((product: any) => [
       {
         url: `${baseUrl}/ar/products/${product.id}`,

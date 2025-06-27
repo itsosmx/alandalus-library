@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
- 
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
@@ -14,6 +14,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/private/', '/admin/'],
       },
     ],
-    sitemap: 'https://alandalus-library.com/sitemap.xml',
+    sitemap: `${process.env.NEXT_PUBLIC_BASE_URL}/sitemap.xml`,
   }
 }

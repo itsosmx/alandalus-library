@@ -32,34 +32,34 @@ export function generatePageMetadata({
   availability = 'in_stock',
 }: MetadataProps): Metadata {
   const siteName = locale === 'ar' ? 'مكتبة الأندلس' : 'Al-Andalus Library';
-  const baseUrl = 'https://alandalus-library.com';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!
   const fullUrl = url ? `${baseUrl}${url}` : baseUrl;
-  
-  const defaultKeywords = locale === 'ar' 
+
+  const defaultKeywords = locale === 'ar'
     ? [
-        'مكتبة الأندلس',
-        'أدوات مكتبية',
-        'قرطاسية',
-        'لوازم مدرسية',
-        'أقلام',
-        'دفاتر',
-        'مستلزمات تعليمية',
-        'أدوات الكتابة',
-        'حقائب مدرسية',
-        'السعودية'
-      ]
+      'مكتبة الأندلس',
+      'أدوات مكتبية',
+      'قرطاسية',
+      'لوازم مدرسية',
+      'أقلام',
+      'دفاتر',
+      'مستلزمات تعليمية',
+      'أدوات الكتابة',
+      'حقائب مدرسية',
+      'السعودية'
+    ]
     : [
-        'Al-Andalus Library',
-        'office supplies',
-        'stationery',
-        'school supplies',
-        'pens',
-        'notebooks',
-        'educational materials',
-        'writing tools',
-        'school bags',
-        'Saudi Arabia'
-      ];
+      'Al-Andalus Library',
+      'office supplies',
+      'stationery',
+      'school supplies',
+      'pens',
+      'notebooks',
+      'educational materials',
+      'writing tools',
+      'school bags',
+      'Saudi Arabia'
+    ];
 
   const allKeywords = [...defaultKeywords, ...keywords];
 
@@ -126,7 +126,7 @@ export function generatePageMetadata({
 
 export function generateStructuredData(type: 'organization' | 'product' | 'website', data: any) {
   const baseUrl = 'https://alandalus-library.com';
-  
+
   switch (type) {
     case 'organization':
       return {
@@ -166,8 +166,8 @@ export function generateStructuredData(type: 'organization' | 'product' | 'websi
           '@type': 'Offer',
           price: data.price,
           priceCurrency: 'SAR',
-          availability: data.inStock 
-            ? 'https://schema.org/InStock' 
+          availability: data.inStock
+            ? 'https://schema.org/InStock'
             : 'https://schema.org/OutOfStock',
           seller: {
             '@type': 'Organization',
