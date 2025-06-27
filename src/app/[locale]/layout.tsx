@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Cairo } from "next/font/google";
+import { Cairo } from "next/font/google";
 import "./globals.css";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
@@ -31,10 +31,8 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
-      <head>
-        <JsonLd data={organizationData} />
-        <JsonLd data={websiteData} />
-      </head>
+      <JsonLd data={organizationData} />
+      <JsonLd data={websiteData} />
       <body className={`${cairo.variable} antialiased`}>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
@@ -54,7 +52,7 @@ export async function generateMetadata({
 
   const title = t("app.name");
   const description = t("app.description");
-  const url = `https://alandalus-library.com/${locale}`;
+  const url = `${process.env.NEXT_PUBLIC_BASE_URL}/${locale}`;
 
   return generatePageMetadata({
     title,
