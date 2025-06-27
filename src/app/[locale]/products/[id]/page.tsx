@@ -12,6 +12,9 @@ import { get_products } from "@/lib/api";
 import ProductCard from "@/components/blocks/product-card";
 import QRCodeShare from "@/components/QRCodeShare";
 import { cn, handleWhatsAppContact } from "@/lib/utils";
+import { generateStructuredData } from "@/lib/metadata";
+import JsonLd from "@/components/JsonLd";
+import Head from "next/head";
 
 // Product type definition
 interface Product {
@@ -159,169 +162,178 @@ export default function ProductPage() {
   const effectivePrice = hasDiscount ? (product.price * (100 - product.sale!)) / 100 : product.price;
   const discountPercentage = hasDiscount ? product.sale! : 0;
 
+  // Generate structured data for the product
+  const productStructuredData = generateStructuredData("product", product);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="container mx-auto px-4 py-8">
-        {/* Back button */}
-        <motion.div className="mb-8" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
-          <Button variant="ghost" onClick={() => router.back()} className="flex items-center gap-2 hover:bg-white/50 dark:hover:bg-gray-800/50">
-            <ArrowLeft className="w-4 h-4" />
-            {t("backButton")}
-          </Button>
-        </motion.div>
+    <>
+      {/* Structured Data */}
+      {productStructuredData && <JsonLd data={productStructuredData} />}
 
-        <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-12" initial="hidden" animate="visible" variants={containerVariants}>
-          {/* Product Images */}
-          <motion.div variants={itemVariants} className="space-y-4">
-            {/* Main Image */}
-            <div className="relative aspect-square bg-gradient-to-br from-blue-100 to-purple-100 dark:from-gray-700 dark:to-gray-600 rounded-2xl overflow-hidden">
-              {product.images && product.images.length > 0 ? (
-                <>
-                  <img src={product.images[currentImageIndex].url} alt={product.name} className="w-full h-full object-cover" />
-
-                  {/* Image navigation */}
-                  {product.images.length > 1 && (
-                    <>
-                      <button
-                        onClick={prevImage}
-                        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-800 rounded-full p-2 shadow-lg transition-all">
-                        <ChevronLeft className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={nextImage}
-                        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-800 rounded-full p-2 shadow-lg transition-all">
-                        <ChevronRight className="w-5 h-5" />
-                      </button>
-                    </>
-                  )}
-                </>
-              ) : (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <BookOpen className="w-24 h-24 text-gray-400" />
-                </div>
-              )}
-
-              {/* Discount Badge */}
-              {hasDiscount && (
-                <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-lg font-medium">
-                  {product?.sale}% {t("sale")}
-                </div>
-              )}
-            </div>
-
-            {/* Thumbnail Images */}
-            {product.images && product.images.length > 1 && (
-              <div className="flex gap-2 overflow-x-auto">
-                {product.images.map((image, index) => (
-                  <button
-                    key={image.id}
-                    onClick={() => setCurrentImageIndex(index)}
-                    className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                      currentImageIndex === index
-                        ? "border-blue-600 ring-2 ring-blue-600/30"
-                        : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
-                    }`}>
-                    <img src={image.url} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            )}
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="container mx-auto px-4 py-8">
+          {/* Back button */}
+          <motion.div className="mb-8" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
+            <Button variant="ghost" onClick={() => router.back()} className="flex items-center gap-2 hover:bg-white/50 dark:hover:bg-gray-800/50">
+              <ArrowLeft className="w-4 h-4" />
+              {t("backButton")}
+            </Button>
           </motion.div>
 
-          {/* Product Details */}
-          <motion.div variants={itemVariants} className="space-y-6">
-            {/* Product Title */}
-            <div>
-              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-2">{product.name}</h1>
+          <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-12" initial="hidden" animate="visible" variants={containerVariants}>
+            {/* Product Images */}
+            <motion.div variants={itemVariants} className="space-y-4">
+              {/* Main Image */}
+              <div className="relative aspect-square bg-gradient-to-br from-blue-100 to-purple-100 dark:from-gray-700 dark:to-gray-600 rounded-2xl overflow-hidden">
+                {product.images && product.images.length > 0 ? (
+                  <>
+                    <img src={product.images[currentImageIndex].url} alt={product.name} className="w-full h-full object-cover" />
 
-              {/* Rating placeholder - you can add this later */}
-              {/* <div className="flex items-center gap-1">
+                    {/* Image navigation */}
+                    {product.images.length > 1 && (
+                      <>
+                        <button
+                          onClick={prevImage}
+                          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-800 rounded-full p-2 shadow-lg transition-all">
+                          <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={nextImage}
+                          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-800 rounded-full p-2 shadow-lg transition-all">
+                          <ChevronRight className="w-5 h-5" />
+                        </button>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <BookOpen className="w-24 h-24 text-gray-400" />
+                  </div>
+                )}
+
+                {/* Discount Badge */}
+                {hasDiscount && (
+                  <div className="absolute top-4 right-4 bg-red-500 text-white px-3 py-1 rounded-lg font-medium">
+                    {product?.sale}% {t("sale")}
+                  </div>
+                )}
+              </div>
+
+              {/* Thumbnail Images */}
+              {product.images && product.images.length > 1 && (
+                <div className="flex gap-2 overflow-x-auto">
+                  {product.images.map((image, index) => (
+                    <button
+                      key={image.id}
+                      onClick={() => setCurrentImageIndex(index)}
+                      className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                        currentImageIndex === index
+                          ? "border-blue-600 ring-2 ring-blue-600/30"
+                          : "border-gray-200 dark:border-gray-700 hover:border-gray-300"
+                      }`}>
+                      <img src={image.url} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+
+            {/* Product Details */}
+            <motion.div variants={itemVariants} className="space-y-6">
+              {/* Product Title */}
+              <div>
+                <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-2">{product.name}</h1>
+
+                {/* Rating placeholder - you can add this later */}
+                {/* <div className="flex items-center gap-1">
                 {Array.from({ length: 5 }, (_, i) => (
                   <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
                 ))}
                 <span className="text-gray-600 dark:text-gray-400 ml-2">(4.8) • {t("rating.reviews", { count: 24 })}</span>
               </div> */}
-            </div>
+              </div>
 
-            {/* Price */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-3">
-                <span className="text-3xl font-bold text-gray-900 dark:text-white">
-                  {Intl.NumberFormat("ar-EG", {
-                    style: "currency",
-                    currency: "EGP",
-                  }).format(effectivePrice)}
-                </span>
-                {!!hasDiscount && (
-                  <span className="text-xl text-gray-500 line-through">
+              {/* Price */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl font-bold text-gray-900 dark:text-white">
                     {Intl.NumberFormat("ar-EG", {
                       style: "currency",
                       currency: "EGP",
-                    }).format(product.price)}
+                    }).format(effectivePrice)}
                   </span>
-                )}
-                {!!hasDiscount && (
-                  <Badge variant="destructive" className="text-sm">
-                    {t("save")}{" "}
-                    {Intl.NumberFormat("ar-EG", {
-                      style: "currency",
-                      currency: "EGP",
-                    }).format(product.price - effectivePrice)}
-                  </Badge>
-                )}
+                  {!!hasDiscount && (
+                    <span className="text-xl text-gray-500 line-through">
+                      {Intl.NumberFormat("ar-EG", {
+                        style: "currency",
+                        currency: "EGP",
+                      }).format(product.price)}
+                    </span>
+                  )}
+                  {!!hasDiscount && (
+                    <Badge variant="destructive" className="text-sm">
+                      {t("save")}{" "}
+                      {Intl.NumberFormat("ar-EG", {
+                        style: "currency",
+                        currency: "EGP",
+                      }).format(product.price - effectivePrice)}
+                    </Badge>
+                  )}
+                </div>
+                <p
+                  className={cn("text-green-600 dark:text-green-400 font-medium", {
+                    "text-red-600": !product.inStock,
+                  })}>
+                  {product.inStock ? t("inStock") : t("outOfStock")}
+                </p>
               </div>
-              <p
-                className={cn("text-green-600 dark:text-green-400 font-medium", {
-                  "text-red-600": !product.inStock,
-                })}>
-                {product.inStock ? t("inStock") : t("outOfStock")}
-              </p>
-            </div>
 
-            {/* Description */}
-            {product?.description?.text && (
-              <>
-                <Separator />
+              {/* Description */}
+              {product?.description?.text && (
+                <>
+                  <Separator />
+                  <div className="space-y-3">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t("description.title")}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{product.description.text}</p>
+                  </div>
+                </>
+              )}
+
+              {/* Quantity and Actions */}
+              <div className="space-y-4">
+                {/* Quantity Selector */}
+                <div className="flex items-center gap-4">
+                  <span className="text-gray-700 dark:text-gray-300 font-medium">{t("quantity")}:</span>
+                  <div className="flex items-center border rounded-lg">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                      -
+                    </button>
+                    <span className="px-4 py-2 border-x">{quantity}</span>
+                    <button
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                      +
+                    </button>
+                  </div>
+                </div>
+                {/* Action Buttons */}
                 <div className="space-y-3">
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t("description.title")}</h3>
-                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{product.description.text}</p>
-                </div>
-              </>
-            )}
-
-            {/* Quantity and Actions */}
-            <div className="space-y-4">
-              {/* Quantity Selector */}
-              <div className="flex items-center gap-4">
-                <span className="text-gray-700 dark:text-gray-300 font-medium">{t("quantity")}:</span>
-                <div className="flex items-center border rounded-lg">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    -
-                  </button>
-                  <span className="px-4 py-2 border-x">{quantity}</span>
-                  <button onClick={() => setQuantity(quantity + 1)} className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    +
-                  </button>
-                </div>
-              </div>
-              {/* Action Buttons */}
-              <div className="space-y-3">
-                <Button
-                  size="lg"
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-6 text-lg"
-                  onClick={() => handleWhatsAppContact(`مرحباً! أنا مهتم بشراء ${product.name} (الكمية: ${quantity})`)}>
-                  <MessageCircle className="w-6 h-6 mr-3" />
-                  {t("contactWhatsApp")}
-                </Button>
-                <QRCodeShare url={`${typeof window !== "undefined" ? window.location.origin : ""}/products/${product.id}`} title={product.name}>
-                  <Button size="lg" variant="outline" className="w-full py-6 text-lg border-2">
-                    <Share2 className="w-4 h-4 mr-2" />
-                    {t("share")}
+                  <Button
+                    size="lg"
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-6 text-lg"
+                    onClick={() => handleWhatsAppContact(`مرحباً! أنا مهتم بشراء ${product.name} (الكمية: ${quantity})`)}>
+                    <MessageCircle className="w-6 h-6 mr-3" />
+                    {t("contactWhatsApp")}
                   </Button>
-                </QRCodeShare>
-                {/* <Button
+                  <QRCodeShare url={`${typeof window !== "undefined" ? window.location.origin : ""}/products/${product.id}`} title={product.name}>
+                    <Button size="lg" variant="outline" className="w-full py-6 text-lg border-2">
+                      <Share2 className="w-4 h-4 mr-2" />
+                      {t("share")}
+                    </Button>
+                  </QRCodeShare>
+                  {/* <Button
                   size="lg"
                   variant="outline"
                   className="w-full py-6 text-lg border-2"
@@ -329,26 +341,27 @@ export default function ProductPage() {
                   <Phone className="w-5 h-5 mr-2" />
                   {t("callForInfo")}
                 </Button> */}
-              </div>{" "}
-            </div>
+                </div>{" "}
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
 
-        {/* Related Products */}
-        {relatedProducts.length > 0 && (
-          <motion.section className="mt-20" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={containerVariants}>
-            <motion.div variants={itemVariants} className="text-center mb-12">
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">{t("relatedProducts.title")}</h2>
-              <p className="text-xl text-gray-600 dark:text-gray-300">{t("relatedProducts.subtitle")}</p>
-            </motion.div>{" "}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {relatedProducts.map((relatedProduct) => (
-                <ProductCard key={relatedProduct.id} product={relatedProduct} />
-              ))}
-            </div>
-          </motion.section>
-        )}
+          {/* Related Products */}
+          {relatedProducts.length > 0 && (
+            <motion.section className="mt-20" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={containerVariants}>
+              <motion.div variants={itemVariants} className="text-center mb-12">
+                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">{t("relatedProducts.title")}</h2>
+                <p className="text-xl text-gray-600 dark:text-gray-300">{t("relatedProducts.subtitle")}</p>
+              </motion.div>{" "}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {relatedProducts.map((relatedProduct) => (
+                  <ProductCard key={relatedProduct.id} product={relatedProduct} />
+                ))}
+              </div>
+            </motion.section>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

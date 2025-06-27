@@ -5,6 +5,8 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { generatePageMetadata, generateStructuredData } from "@/lib/metadata";
+import JsonLd from "@/components/JsonLd";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,8 +30,14 @@ export default async function RootLayout({
     notFound();
   }
 
+  // Generate structured data for the organization
+  const organizationData = generateStructuredData("organization", {});
+  const websiteData = generateStructuredData("website", {});
+
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
+      <JsonLd data={organizationData} />
+      <JsonLd data={websiteData} />
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
@@ -47,8 +55,30 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale });
 
-  return {
-    title: t("app.name"),
-    description: t("app.description"),
-  };
+  const title = t("app.name");
+  const description = t("app.description");
+  const url = `https://alandalus-library.com/${locale}`;
+
+  return generatePageMetadata({
+    title,
+    description,
+    keywords:
+      locale === "ar"
+        ? ["منتجات مكتبية", "أدوات الكتابة", "قرطاسية", "دفاتر", "أقلام", "لوازم مدرسية", "حقائب", "أدوات هندسة", "مستلزمات تعليمية", "أدوات مكتب"]
+        : [
+            "office products",
+            "writing tools",
+            "stationery",
+            "notebooks",
+            "pens",
+            "school supplies",
+            "bags",
+            "engineering tools",
+            "educational supplies",
+            "office tools",
+          ],
+    url,
+    locale,
+    type: "website",
+  });
 }
