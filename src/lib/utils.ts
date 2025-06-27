@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 
 export const handleWhatsAppContact = (message: string) => {
-  const phoneNumber = "01281695049"; // Replace with your actual WhatsApp number
+  const phoneNumber = "+201013283570";
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
   window.open(whatsappUrl, "_blank");
 };
