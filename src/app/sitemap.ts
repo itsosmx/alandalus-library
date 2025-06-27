@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { get_products } from '@/lib/api'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = `${process.env.NEXT_PUBLIC_BASE_URL}`
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://alandalus-library.netlify.app'
 
   // Static pages
   const staticPages = [
